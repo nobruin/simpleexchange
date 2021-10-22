@@ -2,7 +2,6 @@ package com.jaya.simpleexchange.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.jaya.simpleexchange.entity.Conversion
-import com.jaya.simpleexchange.service.ConversionService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -22,7 +21,7 @@ class ConversionControllerTest {
     @Test
     fun `test create new conversion`(){
         val conversion = Conversion(
-            value = 20.0,
+            amount = 20.0,
             originalCurrency = "BRL",
             destinyCurrency = "USD",
             userId = 1
@@ -36,7 +35,7 @@ class ConversionControllerTest {
                 .content(jsonObject))
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andExpect(MockMvcResultMatchers.jsonPath("\$.id").isNumber)
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.value").value(conversion.value))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.value").value(conversion.amount))
             .andExpect(MockMvcResultMatchers.jsonPath("\$.originalCurrency").value(conversion.originalCurrency))
             .andExpect(MockMvcResultMatchers.jsonPath("\$.destinyCurrency").value(conversion.destinyCurrency))
             .andExpect(MockMvcResultMatchers.jsonPath("\$.userId").value(conversion.userId))

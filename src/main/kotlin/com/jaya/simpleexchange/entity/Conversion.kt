@@ -13,9 +13,10 @@ data class Conversion(
     @GeneratedValue
     @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
     val id: Long? = null,
-    val value: Double? = null,
-    val originalCurrency: String? = null,
-    val destinyCurrency: String? = null,
-    val rateConversion: Double? = null,
-    val userId: Long? = null
+    val userId: Long? = null,
+    val amount: Double = 0.0,
+    val originalCurrency: String = "",
+    val destinyCurrency: String = "",
+    var rateConversion: Double? = null,
+    var convertedAmount: Double = 0.0
 )

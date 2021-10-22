@@ -16,3 +16,7 @@ spring:
     console:
       enabled: true
       path: /h2-console
+app:
+    uri: 'http://api.exchangeratesapi.io/v1/'
+    secret: dcbebe7649cd482321d410d8c88a3316
+
