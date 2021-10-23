@@ -42,4 +42,29 @@ class ConversionControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("\$.rateConversion").value(conversion.rateConversion))
             .andDo(MockMvcResultHandlers.print())
     }
+
+    @Test
+    fun `test create conversion validation errors invalid amount`(){
+        val conversion = Conversion(
+            amount = 0.0,
+            originalCurrency = "BRL",
+            destinyCurrency = "USD",
+            userId = 1
+        )
+        val jsonObject = ObjectMapper().writeValueAsString(conversion)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/conversions")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonObject))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.id").isNumber)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.value").value(conversion.amount))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.originalCurrency").value(conversion.originalCurrency))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.destinyCurrency").value(conversion.destinyCurrency))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.userId").value(conversion.userId))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.rateConversion").value(conversion.rateConversion))
+            .andDo(MockMvcResultHandlers.print())
+    }
 }

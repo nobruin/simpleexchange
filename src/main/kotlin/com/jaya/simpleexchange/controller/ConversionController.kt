@@ -5,6 +5,7 @@ import com.jaya.simpleexchange.service.ConversionService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/conversions")
@@ -12,9 +13,8 @@ class ConversionController(private val service: ConversionService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody conversion: Conversion): ResponseEntity<Conversion>{
+    fun create(@Valid @RequestBody conversion: Conversion): ResponseEntity<Conversion>{
         val response: Conversion  = service.create(conversion)
         return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
-
 }

@@ -28,7 +28,7 @@ class ConversionService(
                     div(exchangeResult.rates[conversion.originalCurrency]!!)
                 )
 
-        conversion.convertedAmount = conversion.rateConversion?.times(conversion.amount)!!
+        conversion.convertedAmount = conversion.amount?.let { conversion.rateConversion?.times(it) }!!
 
         return repository.save(conversion)
     }
