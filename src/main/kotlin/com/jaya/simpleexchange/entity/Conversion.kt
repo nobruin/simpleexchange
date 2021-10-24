@@ -19,7 +19,7 @@ data class Conversion(
     @field:NotNull(message = "is mandatory")
     val userId: Long? = null,
     @field:NotNull(message = "is mandatory")
-    @field:DecimalMin("0.0000000001", message = " must be greater than 0")
+    @field:DecimalMin("0.01")
     val amount: BigDecimal = "0.0".toBigDecimal(),
     @field:NotBlank
     @field:Size(min =3, max = 3, message = " must have 3 characters ")

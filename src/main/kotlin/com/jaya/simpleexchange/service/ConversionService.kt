@@ -6,6 +6,8 @@ import com.jaya.simpleexchange.repository.ConversionRepository
 import com.jaya.simpleexchange.service.apiclient.ExchangeApi
 import com.jaya.simpleexchange.util.ConversionUtil
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -34,5 +36,9 @@ class ConversionService(
         conversion.convertedAmount = util.calculateAmount(amount, conversion.rateConversion)
 
         return repository.save(conversion)
+    }
+
+    fun searchByUserId(userId: Long, pageable: Pageable): Page<Conversion>? {
+        return repository.findByUserId(userId, pageable)
     }
 }
