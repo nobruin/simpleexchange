@@ -2,6 +2,7 @@ package com.jaya.simpleexchange.entity
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.jaya.simpleexchange.entity.validation.IsStrCurrencyValid
+import java.math.BigDecimal
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
@@ -19,7 +20,7 @@ data class Conversion(
     val userId: Long? = null,
     @field:NotNull(message = "is mandatory")
     @field:DecimalMin("0.0000000001", message = " must be greater than 0")
-    val amount: Double = 0.0,
+    val amount: BigDecimal = "0.0".toBigDecimal(),
     @field:NotBlank
     @field:Size(min =3, max = 3, message = " must have 3 characters ")
     @IsStrCurrencyValid
@@ -29,7 +30,7 @@ data class Conversion(
     @IsStrCurrencyValid
     val destinyCurrency: String = "",
     @JsonProperty(access=JsonProperty.Access.READ_ONLY)
-    var rateConversion: Double? = null,
+    var rateConversion: BigDecimal? = null,
     @JsonProperty(access=JsonProperty.Access.READ_ONLY)
-    var convertedAmount: Double = 0.0
+    var convertedAmount: BigDecimal = "0.0".toBigDecimal()
 )

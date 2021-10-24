@@ -16,7 +16,6 @@ object ExchangeApi {
         var exchangeResponse = ExchangeApiResult()
 
         response = khttp.get(
-            //url = "http://api.exchangeratesapi.io/v1/latest?access_key=dcbebe7649cd482321d410d8c88a3316&symbols=USD,BRL"
             url = properties.uri+"latest",
             params = mapOf(
                 "access_key" to properties.secret,
