@@ -5,7 +5,9 @@ import com.jaya.simpleexchange.entity.Conversion
 import com.jaya.simpleexchange.repository.ConversionRepository
 import com.jaya.simpleexchange.service.apiclient.ExchangeApi
 import com.jaya.simpleexchange.util.ConversionUtil
+import javassist.NotFoundException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -13,7 +15,9 @@ import org.springframework.stereotype.Service
 @Service
 class ConversionService(
     private val repository: ConversionRepository,
-    private val util: ConversionUtil
+    private val util: ConversionUtil,
+    @Value("User not Found!")
+    private val notFoundMessage: String
 ) {
 
     @Autowired
@@ -38,7 +42,14 @@ class ConversionService(
         return repository.save(conversion)
     }
 
-    fun searchByUserId(userId: Long, pageable: Pageable): Page<Conversion>? {
-        return repository.findByUserId(userId, pageable)
+    fun searchByUserId(userId: Long, pageable: Pageable): Page<Conversion>?  {
+
+        val conversionsPage = repository.findByUserId(userId, pageable)
+
+        if(conversionsPage?.isEmpty == true){
+            throw NotFoundException(notFoundMessage)
+        }
+
+        return conversionsPage
     }
 }

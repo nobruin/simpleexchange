@@ -1,5 +1,6 @@
 package com.jaya.simpleexchange.handler
 
+import javassist.NotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -52,4 +53,15 @@ class ExceptionHandler {
             path = request.servletPath
         )
     }
+
+    @ExceptionHandler(NotFoundException::class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    fun handleNotFound(
+        exception: NotFoundException,
+        request: HttpServletRequest
+    ): ErrorView = ErrorView(
+        errorCode = HttpStatus.NOT_FOUND.value(),
+        error = exception.message,
+        path = request.servletPath
+    )
 }

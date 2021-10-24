@@ -2,6 +2,7 @@ package com.jaya.simpleexchange.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.jaya.simpleexchange.entity.Conversion
+import com.jaya.simpleexchange.repository.ConversionRepository
 import com.jaya.simpleexchange.service.ConversionService
 import org.json.JSONObject
 import org.junit.jupiter.api.Test
@@ -20,6 +21,7 @@ class ConversionControllerTest {
 
     @Autowired lateinit var mockMvc: MockMvc
     @Autowired lateinit var conversionService: ConversionService
+    @Autowired lateinit var repository: ConversionRepository
 
     @Test
     fun `test create new conversion`(){
@@ -156,6 +158,22 @@ class ConversionControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].rateConversion").isNumber)
             .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].convertedAmount").isNumber)
             .andExpect(MockMvcResultMatchers.status().isOk)
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `test get all conversions by userid with error `(){
+
+        repository.deleteAll()
+
+        val userId = 2
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/$userId/conversions"))
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.errorCode").isNumber)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.errorCode").value(404))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.error").isString)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.error").value("User not Found!"))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.path").isString)
             .andDo(MockMvcResultHandlers.print())
     }
 }
