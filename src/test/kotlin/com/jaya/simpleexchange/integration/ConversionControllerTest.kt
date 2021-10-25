@@ -1,7 +1,7 @@
 package com.jaya.simpleexchange.integration
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.json.JsonMapper
+import com.jaya.simpleexchange.dto.ConversionForm
 import com.jaya.simpleexchange.entity.Conversion
 import com.jaya.simpleexchange.repository.ConversionRepository
 import com.jaya.simpleexchange.service.ConversionService
@@ -31,7 +31,7 @@ class ConversionControllerTest {
 
     @Test
     fun `test create new conversion`() {
-        val conversion = Conversion(
+        val conversion = ConversionForm(
             amount = "20.0".toBigDecimal(),
             originalCurrency = "BRL",
             destinyCurrency = "USD",
@@ -53,11 +53,11 @@ class ConversionControllerTest {
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andExpect(MockMvcResultMatchers.jsonPath("\$.id").isNumber)
             .andExpect(MockMvcResultMatchers.jsonPath("\$.amount").value(conversion.amount))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.originalCurrency").value(conversion.originalCurrency))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.destinyCurrency").value(conversion.destinyCurrency))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.userId").value(conversion.userId))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.rateConversion").isNotEmpty)
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.convertedAmount").isNotEmpty)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.original_currency").value(conversion.originalCurrency))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.destiny_currency").value(conversion.destinyCurrency))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.user_id").value(conversion.userId))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.rate_conversion").isNotEmpty)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.converted_amount").isNotEmpty)
             .andDo(MockMvcResultHandlers.print())
     }
 
@@ -172,7 +172,7 @@ class ConversionControllerTest {
         repository.deleteAll()
 
         val createdConversion = conversionService.create(
-            Conversion(
+            ConversionForm(
                 amount = "1".toBigDecimal(),
                 originalCurrency = "BRL",
                 destinyCurrency = "USD",
@@ -184,11 +184,11 @@ class ConversionControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("\$.content").isArray)
             .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].id").value(createdConversion.id))
             .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].amount").value(createdConversion.amount.setScale(1, RoundingMode.HALF_EVEN)))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].originalCurrency").value(createdConversion.originalCurrency))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].destinyCurrency").value(createdConversion.destinyCurrency))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].userId").value(createdConversion.userId))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].rateConversion").isNumber)
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].convertedAmount").isNumber)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].original_currency").value(createdConversion.originalCurrency))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].destiny_currency").value(createdConversion.destinyCurrency))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].user_id").value(createdConversion.userId))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].rate_conversion").isNumber)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].converted_amount").isNumber)
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andDo(MockMvcResultHandlers.print())
     }

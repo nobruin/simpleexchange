@@ -27,11 +27,16 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("io.springfox:springfox-swagger-ui:3.0.0")
+    implementation("io.springfox:springfox-swagger2:3.0.0")
+    implementation("org.springdoc:springdoc-openapi-ui:1.5.0")
+    implementation("org.springdoc:springdoc-openapi-data-rest:1.5.0")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.5.0")
+
     implementation("khttp:khttp:1.0.0")
     implementation("com.beust:klaxon:5.0.1")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-
     runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

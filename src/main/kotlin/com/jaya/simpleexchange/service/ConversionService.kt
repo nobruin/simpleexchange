@@ -1,7 +1,10 @@
 package com.jaya.simpleexchange.service
 
 import com.jaya.simpleexchange.config.ExchangeApiProperties
+import com.jaya.simpleexchange.dto.ConversionForm
 import com.jaya.simpleexchange.entity.Conversion
+import com.jaya.simpleexchange.mapper.FormConversionMapper
+import com.jaya.simpleexchange.mapper.Mapper
 import com.jaya.simpleexchange.repository.ConversionRepository
 import com.jaya.simpleexchange.service.apiclient.ExchangeApi
 import com.jaya.simpleexchange.util.ConversionUtil
@@ -17,14 +20,16 @@ class ConversionService(
     private val repository: ConversionRepository,
     private val util: ConversionUtil,
     @Value("User not Found!")
-    private val notFoundMessage: String
+    private val notFoundMessage: String,
+    private val mapper: FormConversionMapper
 ) {
 
     @Autowired
     lateinit var properties: ExchangeApiProperties
 
-    fun create(conversion: Conversion): Conversion {
-        val (id, userId, amount, originalCurrency, destinyCurrency) = conversion
+    fun create(conversionForm: ConversionForm): Conversion {
+        val (amount, originalCurrency, destinyCurrency) = conversionForm
+        val conversion: Conversion = mapper.map(conversionForm)
 
         val exchangeResult = ExchangeApi.getQuoteForCurrencies(
             originalCurrency = originalCurrency,
@@ -33,8 +38,8 @@ class ConversionService(
         )
 
         conversion.rateConversion = util.calculateConversionRate(
-            exchangeResult.rates[conversion.destinyCurrency],
-            exchangeResult.rates[conversion.originalCurrency]
+            exchangeResult.rates[conversion.originalCurrency],
+            exchangeResult.rates[conversion.destinyCurrency]
         )
 
         conversion.convertedAmount = util.calculateAmount(amount, conversion.rateConversion)
@@ -42,14 +47,11 @@ class ConversionService(
         return repository.save(conversion)
     }
 
-    fun searchByUserId(userId: Long, pageable: Pageable): Page<Conversion>?  {
+    fun searchByUserId(userId: Long, pageable: Pageable): Page<Conversion>? {
 
-        val conversionsPage = repository.findByUserId(userId, pageable)
-
-        if(conversionsPage?.isEmpty == true){
+        if (!repository.existsByUserId(userId)) {
             throw NotFoundException(notFoundMessage)
         }
-
-        return conversionsPage
+        return repository.findAllByUserId(userId, pageable)
     }
 }
