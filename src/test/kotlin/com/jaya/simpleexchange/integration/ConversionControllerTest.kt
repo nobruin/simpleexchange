@@ -1,6 +1,7 @@
 package com.jaya.simpleexchange.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.json.JsonMapper
 import com.jaya.simpleexchange.entity.Conversion
 import com.jaya.simpleexchange.repository.ConversionRepository
 import com.jaya.simpleexchange.service.ConversionService
@@ -14,30 +15,41 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import java.math.RoundingMode
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class ConversionControllerTest {
 
-    @Autowired lateinit var mockMvc: MockMvc
-    @Autowired lateinit var conversionService: ConversionService
-    @Autowired lateinit var repository: ConversionRepository
+    @Autowired
+    lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var conversionService: ConversionService
+    @Autowired
+    lateinit var repository: ConversionRepository
 
     @Test
-    fun `test create new conversion`(){
+    fun `test create new conversion`() {
         val conversion = Conversion(
             amount = "20.0".toBigDecimal(),
             originalCurrency = "BRL",
             destinyCurrency = "USD",
             userId = 1
         )
-        val jsonObject = ObjectMapper().writeValueAsString(conversion)
+
+
+        val jsonObject = JsonMapper
+            .builder().findAndAddModules()
+            .build()
+            .writeValueAsString(conversion)
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/conversions")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonObject))
+                .content(jsonObject)
+        )
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andExpect(MockMvcResultMatchers.jsonPath("\$.id").isNumber)
             .andExpect(MockMvcResultMatchers.jsonPath("\$.amount").value(conversion.amount))
@@ -50,20 +62,24 @@ class ConversionControllerTest {
     }
 
     @Test
-    fun `test create new conversion with error currencies String with more than 3 characters`(){
+    fun `test create new conversion with error currencies String with more than 3 characters`() {
         val conversion = Conversion(
             amount = "1.01".toBigDecimal(),
             originalCurrency = "BRLs",
             destinyCurrency = "USDs",
             userId = 1
         )
-        val jsonObject = ObjectMapper().writeValueAsString(conversion)
+        val jsonObject = JsonMapper
+            .builder().findAndAddModules()
+            .build()
+            .writeValueAsString(conversion)
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/conversions")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonObject))
+                .content(jsonObject)
+        )
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andExpect(MockMvcResultMatchers.jsonPath("\$.errorCode").isNumber)
             .andExpect(MockMvcResultMatchers.jsonPath("\$.errorCode").value(400))
@@ -74,20 +90,24 @@ class ConversionControllerTest {
 
 
     @Test
-    fun `test create new conversion with error currencies String invalid`(){
+    fun `test create new conversion with error currencies String invalid`() {
         val conversion = Conversion(
             amount = "1.01".toBigDecimal(),
             originalCurrency = "CAR",
             destinyCurrency = "XPO",
             userId = 1
         )
-        val jsonObject = ObjectMapper().writeValueAsString(conversion)
+        val jsonObject = JsonMapper
+            .builder().findAndAddModules()
+            .build()
+            .writeValueAsString(conversion)
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/conversions")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonObject))
+                .content(jsonObject)
+        )
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andExpect(MockMvcResultMatchers.jsonPath("\$.errorCode").isNumber)
             .andExpect(MockMvcResultMatchers.jsonPath("\$.errorCode").value(400))
@@ -97,15 +117,17 @@ class ConversionControllerTest {
     }
 
     @Test
-    fun `test create new conversion with error invalid userid value`(){
+    fun `test create new conversion with error invalid userid value`() {
 
-        val jsonObject = JSONObject("""{"amount":2, "originalCurrency":"BRL", "destinyCurrency":"USD", "userId":"TR"}""")
+        val jsonObject =
+            JSONObject("""{"amount":2, "originalCurrency":"BRL", "destinyCurrency":"USD", "userId":"TR"}""")
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/conversions")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonObject.toString()))
+                .content(jsonObject.toString())
+        )
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andExpect(MockMvcResultMatchers.jsonPath("\$.errorCode").isNumber)
             .andExpect(MockMvcResultMatchers.jsonPath("\$.errorCode").value(400))
@@ -115,46 +137,56 @@ class ConversionControllerTest {
     }
 
     @Test
-    fun `test create new conversion with error invalid amount`(){
+    fun `test create new conversion with error invalid amount`() {
         val conversion = Conversion(
             amount = "0.0".toBigDecimal(),
             originalCurrency = "BRL",
             destinyCurrency = "USD",
             userId = 1
         )
-        val jsonObject = ObjectMapper().writeValueAsString(conversion)
+        val jsonObject = JsonMapper
+            .builder().findAndAddModules()
+            .build()
+            .writeValueAsString(conversion)
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/conversions")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonObject))
+                .content(jsonObject)
+        )
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andExpect(MockMvcResultMatchers.jsonPath("\$.errorCode").isNumber)
             .andExpect(MockMvcResultMatchers.jsonPath("\$.errorCode").value(400))
             .andExpect(MockMvcResultMatchers.jsonPath("\$.error").isString)
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.error").value("{amount=must be greater than or equal to 0.01}"))
+            .andExpect(
+                MockMvcResultMatchers.jsonPath("\$.error").value("{amount=must be greater than or equal to 0.01}")
+            )
             .andExpect(MockMvcResultMatchers.jsonPath("\$.path").isString)
             .andDo(MockMvcResultHandlers.print())
     }
 
     @Test
-    fun `test get all conversions by user_id`(){
+    fun `test get all conversions by user_id`() {
 
-        val createdConversion = conversionService.create(Conversion(
-            amount = "1".toBigDecimal(),
-            originalCurrency = "BRL",
-            destinyCurrency = "USD",
-            userId = 1
-        ))
+        repository.deleteAll()
+
+        val createdConversion = conversionService.create(
+            Conversion(
+                amount = "1".toBigDecimal(),
+                originalCurrency = "BRL",
+                destinyCurrency = "USD",
+                userId = 1
+            )
+        )
 
         mockMvc.perform(MockMvcRequestBuilders.get("/users/${createdConversion.userId}/conversions"))
             .andExpect(MockMvcResultMatchers.jsonPath("\$.content").isArray)
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].id").isNumber)
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].amount").isNumber)
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].originalCurrency").isString)
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].destinyCurrency").isString)
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].userId").isNumber)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].id").value(createdConversion.id))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].amount").value(createdConversion.amount.setScale(1, RoundingMode.HALF_EVEN)))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].originalCurrency").value(createdConversion.originalCurrency))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].destinyCurrency").value(createdConversion.destinyCurrency))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].userId").value(createdConversion.userId))
             .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].rateConversion").isNumber)
             .andExpect(MockMvcResultMatchers.jsonPath("\$.content[0].convertedAmount").isNumber)
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -162,7 +194,7 @@ class ConversionControllerTest {
     }
 
     @Test
-    fun `test get all conversions by userid with error `(){
+    fun `test get all conversions by userid with error `() {
 
         repository.deleteAll()
 
