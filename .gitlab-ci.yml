@@ -1,0 +1,51 @@
+image: openjdk:11
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script:
+    - ./gradlew assemble
+  artifacts:
+    paths:
+      - build/libs/*.jar
+    expire_in: 1 week
+  only:
+    - master
+
+test:
+  stage: test
+  script:
+    - ./gradlew check
+
+deploy_staging:
+  stage: deploy
+  script:
+    - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/simpleexchange-staging.git
+    - git push -f heroku HEAD:master
+    - echo "Deployed to Staging Server https://simpleexchange-staging.herokuapp.com/"
+  environment:
+    name: staging
+    url: https://simpleexchange-staging.herokuapp.com/
+  only:
+    - master
+
+deploy_production:
+  stage: deploy
+  script:
+    - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/simpleexchange-staging.git
+    - git push -f heroku HEAD:master
+    - echo "Deployed to Staging Server https://simpleexchange-staging.herokuapp.com/"
+  environment:
+    name: staging
+    url: https://simpleexchange-staging.herokuapp.com/
+  when: manual
+  only:
+    - master
+
+
+after_script:
+  - echo "End script stage CI"
