@@ -26,8 +26,6 @@ deploy_staging:
   script:
     - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/simpleexchange-staging.git
     - git push -f heroku HEAD:master
-    - heroku container:release web
-    - heroku container:release web
     - echo "Deployed to Staging Server https://simpleexchange-staging.herokuapp.com/"
   environment:
     name: staging
@@ -51,10 +49,3 @@ deploy_production:
 
 after_script:
   - echo "End script stage CI"
-
-before_script:
-  - echo "deb http://toolbelt.heroku.com/ubuntu ./" > /etc/apt/sources.list.d/heroku.list
-  - wget -O- https://toolbelt.heroku.com/apt/release.key | apt-key add -
-  - apt-get update
-  - apt-get install -y heroku-toolbelt
-  - gem install dpl

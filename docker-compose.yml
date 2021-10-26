@@ -1,14 +1,14 @@
 version: '3'
 services:
-  mysql-database:
-    image: mysql:8
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=planetsapi
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=password
-    ports:
-      - 3306:3306
+#  mysql-database:
+#    image: mysql:8
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=root
+#      - MYSQL_DATABASE=simpleexchangeapi
+#      - MYSQL_USER=user
+#      - MYSQL_PASSWORD=password
+#    ports:
+#      - 3306:3306
   spring-app:
     build: .
     # entrypoint: dockerize -wait tcp://mysql-database:3306 -timeout 40s ./.docker/entrypoint.sh
@@ -20,5 +20,5 @@ services:
       - DATABASE_HOST=mysql-database
       - DATABASE_USER=user
       - DATABASE_PASSWORD=password
-      - DATABASE_NAME=planetsapi
+      - DATABASE_NAME=simpleexchangeapi
       - DATABASE_PORT=3306
