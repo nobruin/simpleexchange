@@ -26,6 +26,8 @@ deploy_staging:
   script:
     - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/simpleexchange-staging.git
     - git push -f heroku HEAD:master
+    - heroku container:release web
+    - heroku container:release web
     - echo "Deployed to Staging Server https://simpleexchange-staging.herokuapp.com/"
   environment:
     name: staging
