@@ -4,6 +4,7 @@ import com.jaya.simpleexchange.entity.Conversion
 import com.jaya.simpleexchange.service.ConversionService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
+import io.swagger.annotations.ApiParam
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,6 +22,12 @@ class UserController(
     @GetMapping("{id}/conversions")
     @ApiOperation(value = "Endpoint for get All conversions by user_id")
     fun listConversionByUser(
+        @ApiParam(
+            name = "id",
+            value = "id for valid user",
+            example = "1",
+            required = true
+        )
         @PathVariable id: Long,
         pageable: Pageable
     ): Page<Conversion>?  {

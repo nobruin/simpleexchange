@@ -28,10 +28,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.springfox:springfox-swagger-ui:3.0.0")
-    implementation("io.springfox:springfox-swagger2:3.0.0")
-    implementation("org.springdoc:springdoc-openapi-ui:1.5.0")
-    implementation("org.springdoc:springdoc-openapi-data-rest:1.5.0")
-    implementation("org.springdoc:springdoc-openapi-kotlin:1.5.0")
+    implementation("io.springfox:springfox-boot-starter:3.0.0")
 
     implementation("khttp:khttp:1.0.0")
     implementation("com.beust:klaxon:5.0.1")

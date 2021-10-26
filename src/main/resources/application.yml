@@ -21,9 +21,3 @@ spring:
 app:
     uri: 'http://api.exchangeratesapi.io/v1/'
     secret: dcbebe7649cd482321d410d8c88a3316
-springdoc:
-  swagger-ui:
-    path: '/swagger-ui.html'
-    operationsSorter: method
-  api-docs:
-    path: '/api-docs'
