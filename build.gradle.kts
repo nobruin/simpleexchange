@@ -13,6 +13,8 @@ group = "com.jaya"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
+
+
 repositories {
     mavenCentral()
     jcenter()
@@ -29,6 +31,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.springfox:springfox-swagger-ui:3.0.0")
     implementation("io.springfox:springfox-boot-starter:3.0.0")
+    implementation("org.apache.logging.log4j:log4j-api:2.14.1")
+    implementation("org.apache.logging.log4j:log4j-core:2.14.1")
 
     implementation("khttp:khttp:1.0.0")
     implementation("com.beust:klaxon:5.0.1")
@@ -36,6 +40,8 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.apache.logging.log4j:log4j-slf4j-impl:2.14.1")
+
 }
 
 tasks.withType<KotlinCompile> {
@@ -47,4 +53,10 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.withType<Jar>(){
+    manifest{
+        attributes["Main-Class"] = "com.jaya.simpleexchange.SimpleExchangeApplication"
+    }
 }
