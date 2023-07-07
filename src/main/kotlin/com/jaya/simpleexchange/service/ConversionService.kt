@@ -8,6 +8,8 @@ import com.jaya.simpleexchange.mapper.Mapper
 import com.jaya.simpleexchange.repository.ConversionRepository
 import com.jaya.simpleexchange.service.apiclient.ExchangeApi
 import com.jaya.simpleexchange.util.ConversionUtil
+import java.lang.RuntimeException
+import java.math.BigDecimal
 import javassist.NotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -18,7 +20,6 @@ import org.springframework.stereotype.Service
 @Service
 class ConversionService(
     private val repository: ConversionRepository,
-    private val util: ConversionUtil,
     @Value("User not Found!")
     private val notFoundMessage: String,
     private val mapper: FormConversionMapper
@@ -37,12 +38,12 @@ class ConversionService(
             properties = properties
         )
 
-        conversion.rateConversion = util.calculateConversionRate(
+        conversion.rateConversion = calculateConversionRate(
             exchangeResult.rates[conversion.originalCurrency],
             exchangeResult.rates[conversion.destinyCurrency]
         )
 
-        conversion.convertedAmount = util.calculateAmount(amount, conversion.rateConversion)
+        conversion.convertedAmount = calculateAmount(amount, conversion.rateConversion)
 
         return repository.save(conversion)
     }
@@ -53,5 +54,20 @@ class ConversionService(
             throw NotFoundException(notFoundMessage)
         }
         return repository.findAllByUserId(userId, pageable)
+    }
+
+    fun calculateConversionRate(currency: Double?, destinyCurrency: Double?): BigDecimal? {
+        when{
+            currency == null || currency <= 0.0 -> throw RuntimeException("values or Values is invalid for this operation")
+            destinyCurrency == null || destinyCurrency <= 0.0 -> throw RuntimeException("values or Values is invalid for this operation")
+        }
+        return (destinyCurrency?.div(currency!!))?.toBigDecimal()
+    }
+
+    fun calculateAmount(amount: BigDecimal, rateConversion: BigDecimal?): BigDecimal {
+        if(rateConversion == null || rateConversion <= "0.0".toBigDecimal()){
+            throw RuntimeException("value is invalid for this operation")
+        }
+        return amount.let { rateConversion.times(it) }
     }
 }
