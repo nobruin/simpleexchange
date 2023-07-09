@@ -3,7 +3,6 @@ package com.jaya.simpleexchange.service
 import com.jaya.simpleexchange.config.ExchangeApiProperties
 import com.jaya.simpleexchange.dto.ConversionForm
 import com.jaya.simpleexchange.entity.Conversion
-import com.jaya.simpleexchange.mapper.FormConversionMapper
 import com.jaya.simpleexchange.repository.ConversionRepository
 import com.jaya.simpleexchange.service.apiclient.ExchangeApi
 import java.lang.RuntimeException
