@@ -1,6 +1,7 @@
 package com.jaya.simpleexchange.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.jaya.simpleexchange.entity.Conversion
 import com.jaya.simpleexchange.entity.validation.IsStrCurrencyValid
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
@@ -46,4 +47,13 @@ data class ConversionForm(
     @field:NotNull(message = "is mandatory")
     @field:JsonProperty("user_id")
     val userId: Long? = null
-)
+){
+    fun toConversionEntity(): Conversion {
+        return Conversion(
+            userId = userId,
+            originalCurrency = originalCurrency,
+            destinyCurrency = destinyCurrency,
+            amount = amount
+        )
+    }
+}

@@ -1,7 +1,7 @@
 package com.jaya.simpleexchange.dto
 
 data class ExchangeApiResult(
-    var success: Boolean = true,
+    var success: Boolean = false,
     var timestamp: Long = 0,
     var base: String = "",
     var date: String = "",
