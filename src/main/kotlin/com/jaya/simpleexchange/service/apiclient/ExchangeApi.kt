@@ -3,7 +3,6 @@ package com.jaya.simpleexchange.service.apiclient
 import com.beust.klaxon.Klaxon
 import com.jaya.simpleexchange.config.ExchangeApiProperties
 import com.jaya.simpleexchange.dto.ExchangeApiResult
-import com.jaya.simpleexchange.entity.Conversion
 import org.springframework.beans.factory.annotation.Autowired
 import khttp.responses.Response
 
@@ -30,15 +29,11 @@ object ExchangeApi {
     }
 
     private fun isResponseEmpty(): Boolean {
-        if (response.statusCode != 200 || response.jsonObject.get("success").toString().equals("false"))
-            return true
-
-        return false
+        return response.statusCode != 200 || response.jsonObject.get("success").toString() == "false"
     }
 
     private fun convertJsonToResultObject(jsonString: String): ExchangeApiResult {
         val exchangeResponse = Klaxon().parse<ExchangeApiResult>(jsonString)
-
         if(exchangeResponse is ExchangeApiResult)
             return  exchangeResponse
 

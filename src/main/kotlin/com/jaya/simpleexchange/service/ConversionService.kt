@@ -4,10 +4,8 @@ import com.jaya.simpleexchange.config.ExchangeApiProperties
 import com.jaya.simpleexchange.dto.ConversionForm
 import com.jaya.simpleexchange.entity.Conversion
 import com.jaya.simpleexchange.mapper.FormConversionMapper
-import com.jaya.simpleexchange.mapper.Mapper
 import com.jaya.simpleexchange.repository.ConversionRepository
 import com.jaya.simpleexchange.service.apiclient.ExchangeApi
-import com.jaya.simpleexchange.util.ConversionUtil
 import java.lang.RuntimeException
 import java.math.BigDecimal
 import javassist.NotFoundException
@@ -21,8 +19,7 @@ import org.springframework.stereotype.Service
 class ConversionService(
     private val repository: ConversionRepository,
     @Value("User not Found!")
-    private val notFoundMessage: String,
-    private val mapper: FormConversionMapper
+    private val notFoundMessage: String
 ) {
 
     @Autowired
@@ -30,7 +27,7 @@ class ConversionService(
 
     fun create(conversionForm: ConversionForm): Conversion {
         val (amount, originalCurrency, destinyCurrency) = conversionForm
-        val conversion: Conversion = mapper.map(conversionForm)
+        val conversion: Conversion = conversionForm.toConversionEntity()
 
         val exchangeResult = ExchangeApi.getQuoteForCurrencies(
             originalCurrency = originalCurrency,
